@@ -54,7 +54,7 @@ const Registration = () => {
       // Optionally save token or user data if returned, e.g.:
       // localStorage.setItem('token', response.data.token);
 
-      navigate('/login'); // Redirect to login page
+      navigate('/'); // Redirect to login page
     } catch (error) {
       console.error('Registration failed:', error);
       if (error.response && error.response.data && error.response.data.message) {
@@ -68,7 +68,7 @@ const Registration = () => {
   };
 
   const handleLogin = () => {
-    navigate('/login');
+    navigate('/');
   };
 
   return (

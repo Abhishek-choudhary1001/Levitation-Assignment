@@ -7,14 +7,14 @@ const Home = () => {
 
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [pdfLoadingId, setPdfLoadingId] = useState(null); // For tracking which invoice is downloading
+  const [pdfLoadingId, setPdfLoadingId] = useState(null);
   const [form, setForm] = useState({ name: "", price: "", quantity: "" });
   const [items, setItems] = useState([]);
   const [currentInvoiceId, setCurrentInvoiceId] = useState(null);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    navigate("/login");
+    navigate("/");
   };
 
   useEffect(() => {
@@ -75,7 +75,7 @@ const Home = () => {
   const handleDownloadPDF = async (id) => {
     if (!id) return;
     try {
-      setPdfLoadingId(id); // Show spinner for this invoice
+      setPdfLoadingId(id);
       const token = localStorage.getItem("token");
       const res = await axios.get(
         `http://localhost:5000/api/invoices/generate-pdf/${id}`,
@@ -92,7 +92,7 @@ const Home = () => {
     } catch (err) {
       console.error("Error generating PDF:", err);
     } finally {
-      setPdfLoadingId(null); // Hide spinner
+      setPdfLoadingId(null);
     }
   };
 
@@ -150,6 +150,11 @@ const Home = () => {
 
           {/* Add Product Form */}
           <div className="p-6 rounded-lg mb-10">
+            <div className="grid sm:grid-cols-3 gap-4 mb-2 text-gray-400 text-sm font-semibold">
+              <span>Product Name</span>
+              <span>Product Price</span>
+              <span>Product Quantity</span>
+            </div>
             <div className="grid sm:grid-cols-3 gap-4 mb-4">
               <input
                 type="text"
@@ -213,31 +218,31 @@ const Home = () => {
                 <tfoot className="bg-[#2c2c2c] text-gray-200 font-semibold">
                   <tr>
                     <td colSpan="3" className="p-3 text-right">Sub Total:</td>
-                    <td className="p-3">₹{calculateSubtotal(items).toFixed(2)}</td>
+                    <td className="p-3 border-t border-gray-500">₹{calculateSubtotal(items).toFixed(2)}</td>
                   </tr>
                   <tr>
                     <td colSpan="3" className="p-3 text-right">GST (18%):</td>
-                    <td className="p-3">₹{calculateGST(calculateSubtotal(items)).toFixed(2)}</td>
+                    <td className="p-3 border-t border-gray-500">₹{calculateGST(calculateSubtotal(items)).toFixed(2)}</td>
                   </tr>
                   <tr>
                     <td colSpan="3" className="p-3 text-right">Final Amount:</td>
-                    <td className="p-3">₹{(calculateSubtotal(items)*1.18).toFixed(2)}</td>
+                    <td className="p-3 border-t-2 border-gray-300">₹{(calculateSubtotal(items)*1.18).toFixed(2)}</td>
                   </tr>
                 </tfoot>
               </table>
 
-              <div className="flex justify-center gap-4 mt-6">
+              <div className="flex flex-col items-center gap-4 mt-6">
                 <button
                   onClick={handleSaveInvoice}
                   disabled={loading}
-                  className="bg-gradient-to-r from-[#141414] to-[#303030] text-[#ccf575] font-semibold px-8 py-3 rounded-md"
+                  className="bg-gradient-to-r from-[#141414] to-[#303030] text-[#ccf575] font-semibold px-8 py-3 rounded-md w-48"
                 >
                   {loading ? "Saving..." : "Save Invoice"}
                 </button>
 
                 <button
                   onClick={() => handleDownloadPDF(currentInvoiceId)}
-                  className="bg-green-600 text-white font-semibold px-8 py-3 rounded-md flex items-center justify-center"
+                  className="bg-green-600 text-white font-semibold px-8 py-3 rounded-md flex items-center justify-center w-48"
                   disabled={!currentInvoiceId || pdfLoadingId === currentInvoiceId}
                 >
                   {pdfLoadingId === currentInvoiceId ? (
@@ -284,18 +289,18 @@ const Home = () => {
                           </tr>
                         ))}
                       </tbody>
-                      <tfoot className=" text-gray-200 font-semibold">
+                      <tfoot className="text-gray-200 font-semibold">
                         <tr>
                           <td colSpan="3" className="p-2 text-right">Sub Total:</td>
-                          <td className="p-2">₹{subtotal.toFixed(2)}</td>
+                          <td className="p-2 border-t border-gray-500">₹{subtotal.toFixed(2)}</td>
                         </tr>
                         <tr>
                           <td colSpan="3" className="p-2 text-right">GST (18%):</td>
-                          <td className="p-2">₹{gst.toFixed(2)}</td>
+                          <td className="p-2 border-t border-gray-500">₹{gst.toFixed(2)}</td>
                         </tr>
                         <tr>
                           <td colSpan="3" className="p-2 text-right">Final Amount:</td>
-                          <td className="p-2">₹{finalAmount.toFixed(2)}</td>
+                          <td className="p-2 border-t-2 border-gray-300">₹{finalAmount.toFixed(2)}</td>
                         </tr>
                       </tfoot>
                     </table>
@@ -309,7 +314,7 @@ const Home = () => {
                       </button>
                       <button
                         onClick={() => handleDownloadPDF(inv._id)}
-                        className=" text-green-600 text-sm font-semibold rounded-md px-6 py-2 flex items-center justify-center"
+                        className="text-green-600 text-sm font-semibold rounded-md px-6 py-2 flex items-center justify-center"
                         disabled={pdfLoadingId === inv._id}
                       >
                         {pdfLoadingId === inv._id ? (
@@ -326,9 +331,6 @@ const Home = () => {
           </div>
         </div>
       </main>
-      <div>
-        
-      </div>
     </div>
   );
 };
