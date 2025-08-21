@@ -10,11 +10,25 @@ dotenv.config();
 const app = express();
 
 // CORS setup
+
+const allowedOrigins = [
+  "https://levitation-assignment-13.onrender.com",
+  "https://levitation-assignment-1-947n.onrender.com",
+];
+
 app.use(
   cors({
-    origin: "https://levitation-assignment-13.onrender.com", // frontend URL
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps, Postman)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    credentials: true, // if you need cookies/auth headers
+    credentials: true, // allow cookies/auth headers
   })
 );
 
