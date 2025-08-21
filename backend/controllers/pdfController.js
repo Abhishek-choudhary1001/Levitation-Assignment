@@ -14,7 +14,8 @@ export const generateInvoice = async (req, res) => {
 // Inside your function
 try {
   const browser = await puppeteer.launch({
-    executablePath: '/usr/bin/google-chrome-stable', // path on Render's image
+    headless: true,
+    
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
   
