@@ -1,8 +1,9 @@
 import puppeteer from "puppeteer";
 import Invoice from "../models/Invoice.js";
-import chromium from "chrome-aws-lambda";
+
 
 export const generateInvoice = async (req, res) => {
+  let browser, page;
   try {
     const { id } = req.params;
     const invoice = await Invoice.findById(id).populate("user", "name email");
@@ -10,41 +11,6 @@ export const generateInvoice = async (req, res) => {
     if (!invoice) return res.status(404).json({ message: "Invoice not found" });
 
     
-
-// Inside your function
-try {
-  const browser = await puppeteer.launch({
-    headless: true,
-    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
-  });
-  
-
-  const page = await browser.newPage();
-
-  try {
-    await page.setContent(htmlContent, { waitUntil: "networkidle0" });
-    const pdfBuffer = await page.pdf({
-      format: "A4",
-      printBackground: true,
-      margin: { top: "20px", bottom: "20px", left: "20px", right: "20px" },
-    });
-    await browser.close();
-    res.set({
-      "Content-Type": "application/pdf",
-      "Content-Disposition": `attachment; filename=invoice-${invoice._id}.pdf`,
-    });
-    res.send(pdfBuffer);
-  } catch (pdfErr) {
-    console.error("PDF generation error:", pdfErr);
-    await browser.close();
-    res.status(500).json({ message: "PDF generation failed" });
-  }
-
-} catch (chromiumErr) {
-  console.error("Chromium launch error:", chromiumErr);
-  res.status(500).json({ message: "Chromium launch failed" });
-}
 
 
     const htmlContent = `
@@ -273,19 +239,34 @@ thead th {
   </body>
 </html>
 `;
+browser = await puppeteer.launch({
+  headless: true,
+  args: ["--no-sandbox", "--disable-setuid-sandbox"],
+});
+page = await browser.newPage();
 
-await page.setContent('<h1>Hello PDF</h1>'); 
-const pdfBuffer = await page.pdf({ format: 'A4' });
+// 3️⃣ Generate PDF from HTML
+await page.setContent(htmlContent, { waitUntil: "networkidle0" });
+const pdfBuffer = await page.pdf({
+  format: "A4",
+  printBackground: true,
+  margin: { top: "20px", bottom: "20px", left: "20px", right: "20px" },
+});
 
+// 4️⃣ Close browser
 await browser.close();
 
-res.set({
-  'Content-Type': 'application/pdf',
-  'Content-Disposition': 'attachment; filename=invoice.pdf',
-});
+// 5️⃣ Send PDF as response
+res.setHeader("Content-Type", "application/pdf");
+res.setHeader(
+  "Content-Disposition",
+  `attachment; filename=invoice-${invoice._id}.pdf`
+);
 return res.send(pdfBuffer);
+
 } catch (err) {
-console.error(err);
-return res.status(500).json({ error: "PDF generation failed" });
+console.error("PDF generation failed:", err);
+if (browser) await browser.close();
+if (!res.headersSent) res.status(500).json({ error: "PDF generation failed" });
 }
 };
