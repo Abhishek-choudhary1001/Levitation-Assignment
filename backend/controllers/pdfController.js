@@ -1,5 +1,6 @@
 import puppeteer from "puppeteer";
 import Invoice from "../models/Invoice.js";
+import chromium from "chrome-aws-lambda";
 
 export const generateInvoice = async (req, res) => {
   try {
@@ -8,10 +9,16 @@ export const generateInvoice = async (req, res) => {
 
     if (!invoice) return res.status(404).json({ message: "Invoice not found" });
 
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
-    });
+    
+
+// Inside your function
+const browser = await chromium.puppeteer.launch({
+  args: chromium.args,
+  defaultViewport: chromium.defaultViewport,
+  executablePath: await chromium.executablePath,
+  headless: chromium.headless,
+});
+
     const page = await browser.newPage();
 
     const htmlContent = `
