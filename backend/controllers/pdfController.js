@@ -13,12 +13,11 @@ export const generateInvoice = async (req, res) => {
 
 // Inside your function
 try {
-  const browser = await chromium.puppeteer.launch({
-    args: chromium.args,
-    defaultViewport: chromium.defaultViewport,
-    executablePath: await chromium.executablePath,
-    headless: chromium.headless,
+  const browser = await puppeteer.launch({
+    executablePath: '/usr/bin/google-chrome-stable', // path on Render's image
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
+  
 
   const page = await browser.newPage();
 
