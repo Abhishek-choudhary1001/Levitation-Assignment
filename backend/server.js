@@ -9,8 +9,16 @@ import invoiceRoutes from "./routes/invoiceRoutes.js";
 dotenv.config();
 const app = express();
 
+// CORS setup
+app.use(
+  cors({
+    origin: "https://levitation-assignment-1-947n.onrender.com", // frontend URL
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    credentials: true, // if you need cookies/auth headers
+  })
+);
+
 // Middleware
-app.use(cors());
 app.use(express.json());
 
 // Database connection
@@ -20,6 +28,6 @@ connectDB();
 app.use("/api/auth", authRoutes);
 app.use("/api/invoices", invoiceRoutes);
 
+// Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
