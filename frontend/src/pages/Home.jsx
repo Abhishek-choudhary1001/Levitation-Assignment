@@ -7,7 +7,7 @@ const Home = () => {
 
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(false);
-
+  const [pdfLoadingId, setPdfLoadingId] = useState(null); // For tracking which invoice is downloading
   const [form, setForm] = useState({ name: "", price: "", quantity: "" });
   const [items, setItems] = useState([]);
   const [currentInvoiceId, setCurrentInvoiceId] = useState(null);
@@ -75,6 +75,7 @@ const Home = () => {
   const handleDownloadPDF = async (id) => {
     if (!id) return;
     try {
+      setPdfLoadingId(id); // Show spinner for this invoice
       const token = localStorage.getItem("token");
       const res = await axios.get(
         `http://localhost:5000/api/invoices/generate-pdf/${id}`,
@@ -90,6 +91,8 @@ const Home = () => {
       link.remove();
     } catch (err) {
       console.error("Error generating PDF:", err);
+    } finally {
+      setPdfLoadingId(null); // Hide spinner
     }
   };
 
@@ -234,10 +237,14 @@ const Home = () => {
 
                 <button
                   onClick={() => handleDownloadPDF(currentInvoiceId)}
-                  className="bg-green-600 text-white font-semibold px-8 py-3 rounded-md"
-                  disabled={!currentInvoiceId}
+                  className="bg-green-600 text-white font-semibold px-8 py-3 rounded-md flex items-center justify-center"
+                  disabled={!currentInvoiceId || pdfLoadingId === currentInvoiceId}
                 >
-                  Generate PDF
+                  {pdfLoadingId === currentInvoiceId ? (
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  ) : (
+                    "Generate PDF"
+                  )}
                 </button>
               </div>
             </div>
@@ -259,12 +266,12 @@ const Home = () => {
                     className="border border-[#2c2c2c] rounded-lg p-4 mb-6"
                   >
                     <table className="w-full text-left text-sm mb-4">
-                      <thead className="bg-[#2c2c2c] text-gray-200">
+                      <thead className="bg-white text-black">
                         <tr>
-                          <th className="p-2 text-left">Product</th>
+                          <th className="p-2 text-left">Product Name ↑</th>
                           <th className="p-2 text-left">Price</th>
-                          <th className="p-2 text-left">Qty</th>
-                          <th className="p-2 text-left">Total</th>
+                          <th className="p-2 text-left">Quantity ↓</th>
+                          <th className="p-2 text-left">Total Price</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -277,7 +284,7 @@ const Home = () => {
                           </tr>
                         ))}
                       </tbody>
-                      <tfoot className="bg-[#2c2c2c] text-gray-200 font-semibold">
+                      <tfoot className=" text-gray-200 font-semibold">
                         <tr>
                           <td colSpan="3" className="p-2 text-right">Sub Total:</td>
                           <td className="p-2">₹{subtotal.toFixed(2)}</td>
@@ -302,9 +309,14 @@ const Home = () => {
                       </button>
                       <button
                         onClick={() => handleDownloadPDF(inv._id)}
-                        className="bg-green-600 text-white text-sm font-semibold rounded-md px-6 py-2"
+                        className=" text-green-600 text-sm font-semibold rounded-md px-6 py-2 flex items-center justify-center"
+                        disabled={pdfLoadingId === inv._id}
                       >
-                        Download PDF
+                        {pdfLoadingId === inv._id ? (
+                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        ) : (
+                          "Generate PDF Invoice"
+                        )}
                       </button>
                     </div>
                   </div>
@@ -314,6 +326,9 @@ const Home = () => {
           </div>
         </div>
       </main>
+      <div>
+        
+      </div>
     </div>
   );
 };
