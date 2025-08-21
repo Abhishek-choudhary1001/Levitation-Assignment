@@ -12,7 +12,7 @@ const app = express();
 // CORS setup
 app.use(
   cors({
-    origin: "https://levitation-assignment-1-947n.onrender.com", // frontend URL
+    origin: "https://levitation-assignment-13.onrender.com", // frontend URL
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     credentials: true, // if you need cookies/auth headers
   })
