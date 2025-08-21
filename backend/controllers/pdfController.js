@@ -12,14 +12,40 @@ export const generateInvoice = async (req, res) => {
     
 
 // Inside your function
-const browser = await chromium.puppeteer.launch({
-  args: chromium.args,
-  defaultViewport: chromium.defaultViewport,
-  executablePath: await chromium.executablePath,
-  headless: chromium.headless,
-});
+try {
+  const browser = await chromium.puppeteer.launch({
+    args: chromium.args,
+    defaultViewport: chromium.defaultViewport,
+    executablePath: await chromium.executablePath,
+    headless: chromium.headless,
+  });
 
-    const page = await browser.newPage();
+  const page = await browser.newPage();
+
+  try {
+    await page.setContent(htmlContent, { waitUntil: "networkidle0" });
+    const pdfBuffer = await page.pdf({
+      format: "A4",
+      printBackground: true,
+      margin: { top: "20px", bottom: "20px", left: "20px", right: "20px" },
+    });
+    await browser.close();
+    res.set({
+      "Content-Type": "application/pdf",
+      "Content-Disposition": `attachment; filename=invoice-${invoice._id}.pdf`,
+    });
+    res.send(pdfBuffer);
+  } catch (pdfErr) {
+    console.error("PDF generation error:", pdfErr);
+    await browser.close();
+    res.status(500).json({ message: "PDF generation failed" });
+  }
+
+} catch (chromiumErr) {
+  console.error("Chromium launch error:", chromiumErr);
+  res.status(500).json({ message: "Chromium launch failed" });
+}
+
 
     const htmlContent = `
 <html>
