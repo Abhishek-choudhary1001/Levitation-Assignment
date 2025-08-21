@@ -24,7 +24,7 @@ const Home = () => {
   const fetchInvoices = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/invoices`, {
+      const res = await axios.get(`https://levitation-assignment-12.onrender.com/api/invoices`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setInvoices(res.data);
@@ -57,7 +57,7 @@ const Home = () => {
       const token = localStorage.getItem("token");
 
       const res = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/api/invoices`,
+        `https://levitation-assignment-12.onrender.com/api/invoices`,
         { items },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -78,7 +78,7 @@ const Home = () => {
       setPdfLoadingId(id);
       const token = localStorage.getItem("token");
       const res = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/api/invoices/generate-pdf/${id}`,
+        `https://levitation-assignment-12.onrender.com/api/invoices/generate-pdf/${id}`,
         { responseType: "blob", headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -99,7 +99,7 @@ const Home = () => {
   const handleDeleteInvoice = async (id) => {
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/api/invoices/${id}`, {
+      await axios.delete(`https://levitation-assignment-12.onrender.com/api/invoices/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
