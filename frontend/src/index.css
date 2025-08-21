@@ -1,0 +1,75 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+
+body {
+  font-family: 'Poppins', 'Pretendard', sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+@layer base {
+  :root {
+    /* Global Colors */
+    --global-bg-1: #141414;
+    --global-bg-2: #1e1e1e;
+    --global-bg-3: #ccf575;
+    --global-bg-4: #ccf5758e;
+    --global-text-1: #a6a6a6;
+    --global-text-2: #b8b8b8;
+    --global-text-3: #ffffff;
+
+    /* Button Colors */
+    --button-text-1: #000000;
+    --button-text-2: #ccf575;
+
+    /* EditText Colors */
+    --edittext-bg-1: #202020;
+    --edittext-text-1: #707070;
+  }
+}
+
+@layer utilities {
+  /* Global */
+  .bg-global-1 {
+    background-color: var(--global-bg-1);
+  }
+  .bg-global-2 {
+    background-color: var(--global-bg-2);
+  }
+  .bg-global-3 {
+    background-color: var(--global-bg-3);
+  }
+  .bg-global-4 {
+    background-color: var(--global-bg-4);
+  }
+  .text-global-1 {
+    color: var(--global-text-1);
+  }
+  .text-global-2 {
+    color: var(--global-text-2);
+  }
+  .text-global-3 {
+    color: var(--global-text-3);
+  }
+
+  /* Button */
+  .text-button-1 {
+    color: var(--button-text-1);
+  }
+  .text-button-2 {
+    color: var(--button-text-2);
+  }
+
+  /* EditText */
+  .bg-edittext-1 {
+    background-color: var(--edittext-bg-1);
+  }
+  .text-edittext-1 {
+    color: var(--edittext-text-1);
+  }
+}
