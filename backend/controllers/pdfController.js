@@ -15,7 +15,7 @@ export const generateInvoice = async (req, res) => {
 try {
   const browser = await puppeteer.launch({
     headless: true,
-    
+    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
   
@@ -274,23 +274,18 @@ thead th {
 </html>
 `;
 
-    await page.setContent(htmlContent, { waitUntil: "networkidle0" });
-    const pdfBuffer = await page.pdf({
-      format: "A4",
-      printBackground: true,
-      margin: { top: "20px", bottom: "20px", left: "20px", right: "20px" },
-    });
+await page.setContent('<h1>Hello PDF</h1>'); 
+const pdfBuffer = await page.pdf({ format: 'A4' });
 
-    await browser.close();
+await browser.close();
 
-    res.set({
-      "Content-Type": "application/pdf",
-      "Content-Disposition": `attachment; filename=invoice-${invoice._id}.pdf`,
-    });
-    res.send(pdfBuffer);
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: err.message });
-  }
+res.set({
+  'Content-Type': 'application/pdf',
+  'Content-Disposition': 'attachment; filename=invoice.pdf',
+});
+return res.send(pdfBuffer);
+} catch (err) {
+console.error(err);
+return res.status(500).json({ error: "PDF generation failed" });
+}
 };
