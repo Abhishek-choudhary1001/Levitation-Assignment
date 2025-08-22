@@ -68,7 +68,7 @@ const Login = () => {
           <Button
             variant="gradient"
             onClick={() => navigate('/signup')}
-            className="hidden lg:block border border-transparent bg-gradient-to-r from-[#282c20] to-[#ccf575] text-[#ccf575] text-sm font-medium rounded-md px-4 py-3 transition-transform duration-300 ease-in-out hover:translate-x-20"
+            className=" border border-transparent bg-gradient-to-r from-[#282c20] to-[#ccf575] text-[#ccf575] text-sm font-medium rounded-md px-4 py-3 transition-transform duration-300 ease-in-out hover:translate-x-20"
           >
             Connecting People With Technology
           </Button>
